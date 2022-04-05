@@ -1,0 +1,41 @@
+---
+- hosts: meshki
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: Startin Application Deployment
+      debug:
+        msg: Starting Deployment
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+    - name: Installing GIT Client
+      yum:
+        name: 'git'
+        state: latest
+    - name: Installing requirements
+      shell: |
+        amazon-linux-extras install docker -y
+        usermod -a -G docker ec2-user
+        systemctl enable docker --now
+        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+        chmod a+x /usr/bin/docker-compose
+    - name: Git checkout
+      ansible.builtin.git:
+        repo: 'https://github.com/abalfazlmeshki/rbi.git'
+        dest: /opt/web
+        force: yes
+#    - name: build the Images for Docker Compose
+#      docker_compose:
+#        project_src: /opt/web/meshki
+#        files:
+#        - docker-compose.yml
+    - name: build the Images for Docker Compose
+      shell: |
+        cd /opt/web/meshki
+        docker-compose build
+    - name: Running the Web Applicationa and Proxy
+      shell: |
+        cd /opt/web/meshki
+        docker-compose up -d
