@@ -9,8 +9,6 @@ services:
     ports:
       - "80"
     restart: always
-#    networks:
-#    - "webapp" 
 
   proxy:
     build: proxy
@@ -24,9 +22,3 @@ services:
       - ./proxy/ssl:/etc/nginx/ssl
       - /var/run/docker.sock:/docker.sock
     restart: always
-#    networks:
-#    - "webapp"     
-#networks:
-#  webapp:
-#    external: true
-    
