@@ -20,5 +20,4 @@ services:
     volumes:
       - ./proxy/content:/etc/nginx/conf.d/
       - ./proxy/ssl:/etc/nginx/ssl
-      - /var/run/docker.sock:/docker.sock
     restart: always
